@@ -1,0 +1,53 @@
+{
+  "horses": [
+    {
+      "id": 1,
+      "name": "Thunder Bolt",
+      "speed": 85,
+      "endurance": 90,
+      "color": "#FF0000"
+    },
+    {
+      "id": 2,
+      "name": "Silver Arrow",
+      "speed": 92,
+      "endurance": 78,
+      "color": "#0000FF"
+    },
+    {
+      "id": 3,
+      "name": "Golden Star",
+      "speed": 88,
+      "endurance": 85,
+      "color": "#FFD700"
+    },
+    {
+      "id": 4,
+      "name": "Midnight Runner",
+      "speed": 95,
+      "endurance": 70,
+      "color": "#000080"
+    },
+    {
+      "id": 5,
+      "name": "Fire Storm",
+      "speed": 87,
+      "endurance": 88,
+      "color": "#FF4500"
+    }
+  ],
+  "raceSchedule": [
+    {
+      "id": 1,
+      "horses": [1, 2, 3],
+      "distance": 1000,
+      "status": "pending"
+    },
+    {
+      "id": 2,
+      "horses": [4, 5, 1],
+      "distance": 1200,
+      "status": "pending"
+    }
+  ]
+}
