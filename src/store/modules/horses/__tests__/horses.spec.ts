@@ -5,11 +5,14 @@ import {
   HORSE_ACTIONS,
   HorsesState,
   RoundResult,
+  Horse,
+  RaceSchedule,
 } from "@/store/modules/horses/models";
 import {
   generateRandomHorses,
   generateSchedule,
 } from "@/store/modules/horses/utils";
+import { ActionContext } from "vuex";
 
 jest.mock("@/store/modules/horses/utils", () => ({
   generateRandomHorses: jest.fn(),
@@ -25,6 +28,18 @@ const mockGenerateSchedule = generateSchedule as jest.MockedFunction<
 
 describe("Horses Store Module", () => {
   let state: HorsesState;
+
+  const createMockContext = (
+    commit: jest.Mock,
+    state?: HorsesState
+  ): ActionContext<HorsesState, unknown> => ({
+    commit,
+    state: state || moduleHorses.state(),
+    dispatch: jest.fn(),
+    getters: {},
+    rootState: {} as HorsesState,
+    rootGetters: {},
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -171,9 +186,9 @@ describe("Horses Store Module", () => {
         ];
         mockGenerateRandomHorses.mockReturnValue(mockHorses);
 
-        await moduleHorses.actions[HORSE_ACTIONS.GENERATE_HORSES]({
-          commit,
-        } as any);
+        await moduleHorses.actions[HORSE_ACTIONS.GENERATE_HORSES](
+          createMockContext(commit)
+        );
 
         expect(mockGenerateRandomHorses).toHaveBeenCalledWith(20);
         expect(commit).toHaveBeenCalledWith(
@@ -189,10 +204,9 @@ describe("Horses Store Module", () => {
         const mockSchedule = [{ round: 1, distance: 100, participants: [] }];
         mockGenerateSchedule.mockReturnValue(mockSchedule);
 
-        await moduleHorses.actions[HORSE_ACTIONS.CREATE_SCHEDULE]({
-          commit,
-          state,
-        } as any);
+        await moduleHorses.actions[HORSE_ACTIONS.CREATE_SCHEDULE](
+          createMockContext(commit, state)
+        );
 
         expect(mockGenerateSchedule).toHaveBeenCalledWith(state.horses);
         expect(commit).toHaveBeenCalledWith(
@@ -216,9 +230,9 @@ describe("Horses Store Module", () => {
 
     describe("resetRaceValues", () => {
       it("should reset all race-related values", async () => {
-        await moduleHorses.actions[HORSE_ACTIONS.RESET_RACE_VALUES]({
-          commit,
-        } as any);
+        await moduleHorses.actions[HORSE_ACTIONS.RESET_RACE_VALUES](
+          createMockContext(commit)
+        );
 
         expect(commit).toHaveBeenCalledWith(
           HORSE_MUTATIONS.SET_CURRENT_ROUND,
@@ -285,34 +299,33 @@ describe("Horses Store Module", () => {
       mockGenerateRandomHorses.mockReturnValue(mockHorses);
       mockGenerateSchedule.mockReturnValue(mockSchedule);
 
-      const commit = (mutation: string, payload: any) => {
+      const mockCommit = jest.fn((mutation: string, payload: unknown) => {
         switch (mutation) {
           case HORSE_MUTATIONS.SET_HORSES:
-            state.horses = payload;
+            state.horses = payload as Horse[];
             break;
           case HORSE_MUTATIONS.SET_SCHEDULE:
-            state.schedule = payload;
+            state.schedule = payload as RaceSchedule[];
             break;
           case HORSE_MUTATIONS.SET_CURRENT_ROUND:
-            state.currentRound = payload;
+            state.currentRound = payload as number;
             break;
           case HORSE_MUTATIONS.SET_RACE_FINISHED:
-            state.raceFinished = payload;
+            state.raceFinished = payload as boolean;
             break;
           case HORSE_MUTATIONS.SET_ROUND_RESULTS:
-            state.roundResults = payload;
+            state.roundResults = payload as RoundResult[];
             break;
         }
-      };
+      });
 
-      await moduleHorses.actions[HORSE_ACTIONS.GENERATE_HORSES]({
-        commit,
-      } as any);
+      await moduleHorses.actions[HORSE_ACTIONS.GENERATE_HORSES](
+        createMockContext(mockCommit)
+      );
 
-      await moduleHorses.actions[HORSE_ACTIONS.CREATE_SCHEDULE]({
-        commit,
-        state,
-      } as any);
+      await moduleHorses.actions[HORSE_ACTIONS.CREATE_SCHEDULE](
+        createMockContext(mockCommit, state)
+      );
 
       expect(state.horses).toEqual(mockHorses);
       expect(state.schedule).toEqual(mockSchedule);
@@ -328,26 +341,25 @@ describe("Horses Store Module", () => {
         { round: 1, distance: 100, participants: [], finishedHorses: [] },
       ];
 
-      const commit = (
-        mutation: string,
-        payload: number | boolean | RoundResult[]
-      ) => {
-        switch (mutation) {
-          case HORSE_MUTATIONS.SET_CURRENT_ROUND:
-            state.currentRound = payload as number;
-            break;
-          case HORSE_MUTATIONS.SET_RACE_FINISHED:
-            state.raceFinished = payload as boolean;
-            break;
-          case HORSE_MUTATIONS.SET_ROUND_RESULTS:
-            state.roundResults = payload as RoundResult[];
-            break;
+      const mockCommit = jest.fn(
+        (mutation: string, payload: number | boolean | RoundResult[]) => {
+          switch (mutation) {
+            case HORSE_MUTATIONS.SET_CURRENT_ROUND:
+              state.currentRound = payload as number;
+              break;
+            case HORSE_MUTATIONS.SET_RACE_FINISHED:
+              state.raceFinished = payload as boolean;
+              break;
+            case HORSE_MUTATIONS.SET_ROUND_RESULTS:
+              state.roundResults = payload as RoundResult[];
+              break;
+          }
         }
-      };
+      );
 
-      await moduleHorses.actions[HORSE_ACTIONS.RESET_RACE_VALUES]({
-        commit,
-      } as any);
+      await moduleHorses.actions[HORSE_ACTIONS.RESET_RACE_VALUES](
+        createMockContext(mockCommit)
+      );
 
       expect(state.currentRound).toBe(0);
       expect(state.raceFinished).toBe(false);
