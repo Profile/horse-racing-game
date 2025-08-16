@@ -39,12 +39,6 @@ npm run test:e2e
 npm run test:e2e:open
 ```
 
-### Run component tests
-```bash
-npm run test:component
-npm run test:component:open
-```
-
 ### Lint and fix files
 ```bash
 npm run lint
@@ -76,6 +70,9 @@ src/store/modules/horses/__tests__/
 Run tests with coverage to see how well your code is tested:
 
 ```bash
+# Run all unit tests
+npm run test:unit
+# Run all unit tests with coverage
 npm run test:unit:coverage
 ```
 
@@ -90,40 +87,8 @@ This will generate a coverage report showing:
 - **Utility Tests**: Test pure functions with various inputs
 - **Component Tests**: Test individual Vue components in isolation
 
-### Test Commands
-```bash
-# Run all unit tests
-npm run test:unit
-
-# Run tests with coverage
-npm run test:unit:coverage
-
-# Run tests in watch mode (development)
-npm run test:unit -- --watch
-
-# Run specific test file
-npm run test:unit -- horses.spec.ts
-```
-
-## Code Quality
-
 ### ESLint Configuration
 This project uses ESLint with TypeScript and Vue.js rules for consistent code quality.
-
-### Linting Commands
-```bash
-# Check for linting errors
-npm run lint
-
-# Auto-fix linting issues
-npm run lint -- --fix
-
-# Check specific files
-npm run lint -- src/components/Header.vue
-
-# Check with detailed output
-npm run lint -- --format=stylish
-```
 
 ### Linting Rules
 - **TypeScript**: Strict type checking and best practices
