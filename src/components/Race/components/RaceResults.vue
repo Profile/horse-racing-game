@@ -31,11 +31,11 @@
           </div>
           <div class="roundWinners">
             <span
-              v-for="horse in round.finishedHorses"
+              v-for="(horse, horseIndex) in round.finishedHorses"
               :key="horse.id"
               class="winner"
             >
-              {{ horse.finishedRank }}. {{ horse.name }}
+              {{ horseIndex + 1 }}. {{ horse.name }}
             </span>
           </div>
         </div>
